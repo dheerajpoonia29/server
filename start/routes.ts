@@ -40,3 +40,13 @@ Route
   Route.post('create-new', 'PaintersController.registerPainting')
 })
 .prefix('api/painter/')
+
+Route 
+.group(()=>{  
+  Route.get('get-all', 'BiddingsController.getAll')
+  Route.get('get-by/:address', 'BiddingsController.getPaintings')
+  Route.post('post-bid', 'BiddingsController.postBid')
+  Route.post('close-bid', 'BiddingsController.closeBid')
+})
+.prefix('api/bidding/')
+

@@ -3,15 +3,15 @@
 import Painter from 'App/Models/Painter'
 
 export default class PaintersController {
-    public async getAll(){
+    public async getAll() {
         const painters = await Painter.all();
-        return painters; 
+        return painters;
     }
 
     public async getPaintingIds(ctx) {
         let painter = await Painter.findBy('address', ctx.params.address);
         painter = painter.toJSON()
-        return painter?painter.painting_id.split(',').map((val)=>parseInt(val)):[];
+        return painter ? painter.painting_id.split(',').map((val) => parseInt(val)) : [];
     }
 
     public async registerPainting(ctx) {
@@ -20,25 +20,24 @@ export default class PaintersController {
         //     address: "0x2",
         //     painting_id: "100"
         // }
-        console.log("params data = ", data)
-        try{
-            // update existing
+        try {
             let res;
-            try{
+            try {
                 let painter = await Painter.findBy('address', data.address);
-                painter = painter.toJSON();          
+                painter = painter.toJSON();
                 let tp = painter.painting_id.split(',')
-                tp=tp.map((value)=>parseInt(value))
-                if(tp.indexOf(parseInt(data.painting_id))===-1)     
-                await Painter.query().where('address', data.address).update({ painting_id: painter.painting_id+','+data.painting_id})
+                tp = tp.map((value) => parseInt(value))
+                if (tp.indexOf(parseInt(data.painting_id)) === -1)
+                    await Painter.query().where('address', data.address).update({ painting_id: painter.painting_id + ',' + data.painting_id })
+                res = painter;
             }
-            catch(err){
+            catch (err) {
                 const painter = new Painter()
                 res = await painter.fill(data).save()
-            }            
-            return {msg:"Painter saved in blockchain !", id: res.id}
+            }
+            return { msg: "Painter saved in blockchain !", id: res.id }
         }
-        catch(err){
+        catch (err) {
             return err;
         }
     }
