@@ -16,13 +16,11 @@ export default class BiddingsController {
     public async postBid(ctx) {
         try {
             const data = ctx.request.all()
-            console.log('params = ', data)
             let painting = await Painting.findBy('id', parseInt(data.painting_id));
             if (painting.is_bid_closed === "true") {
                 return { msg: "This bid is closed !" }
             }
-            let temp = await Painting.query().where('id', parseInt(data.painting_id)).update({ bidder: data.address, heighest_bid: data.heighest_bid })
-            console.log('updated = ', temp)
+            let temp = await Painting.query().where('id', parseInt(data.painting_id)).update({ bidder: data.address, heighest_bid: String(data.heighest_bid) })
             return { msg: "Bid updated" }
         }
         catch (err) {
@@ -34,7 +32,6 @@ export default class BiddingsController {
         try {
             const data = ctx.request.all()
             let painting = await Painting.findBy('id', parseInt(data.painting_id));
-            console.log('close bid = ', painting)
             if (painting.is_bid_closed === "true") {
                 return { msg: "Bid is already closed" }
             }
@@ -42,7 +39,6 @@ export default class BiddingsController {
             return { msg: `Bid closed successfully \nWinner: ${painting.bidder} \nHeighest Bid: ${painting.heighest_bid} ` }
         }
         catch (err) {
-            console.log(err)
             return err;
         }
     }
